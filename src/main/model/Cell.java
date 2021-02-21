@@ -1,5 +1,7 @@
 package model;
 
+import com.googlecode.lanterna.TextColor;
+
 public class Cell {
     private Integer index;
     private String value;
@@ -7,6 +9,7 @@ public class Cell {
     private Integer posX;
     private Integer posY;
     private Integer box;
+    private TextColor color;
 
 
     public Cell(Integer index, String value) {

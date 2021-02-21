@@ -2,6 +2,7 @@
 ## Sudoku in Java
 
 A bare-bones 9x9 sudoku game implemented in Java. 
+
 As a fan of sudoku, I wanted to explore the implementation of backtracking search to verify user inputs.
 In its current form, the game is borderless for the sake of simplicity 
 without losing functionality.

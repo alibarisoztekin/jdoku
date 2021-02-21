@@ -53,6 +53,7 @@ public class Game {
 
         for (Integer index : indices.keySet()) {
             Cell cell = indices.get(index);
+            tg.setForegroundColor(ANSI.RED);
             tg.putString(cell.getPosX() + boardOffSet,cell.getPosY() + boardOffSet,cell.getValue());
         }
         screen.refresh();
