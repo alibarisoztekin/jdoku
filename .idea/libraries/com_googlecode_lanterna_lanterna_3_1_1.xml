@@ -5,8 +5,6 @@
       <root url="jar://$MAVEN_REPOSITORY$/com/googlecode/lanterna/lanterna/3.1.1/lanterna-3.1.1.jar!/" />
     </CLASSES>
     <JAVADOC />
-    <SOURCES>
-      <root url="jar://$MAVEN_REPOSITORY$/com/googlecode/lanterna/lanterna/3.1.1/lanterna-3.1.1-sources.jar!/" />
-    </SOURCES>
+    <SOURCES />
   </library>
 </component>
