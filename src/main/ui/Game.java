@@ -26,7 +26,6 @@ public class Game {
     private Board board;
     private HashMap<TerminalPosition, Cell> digitCoordinates;
 
-
     //EFFECTS: Creates the game object
     public Game() throws IOException {
         this.terminal = new DefaultTerminalFactory();
@@ -36,9 +35,6 @@ public class Game {
         File puzzle = new File("./data/puzzles/E1.txt");
         this.board = new Board(puzzle, SIZE);
         render();
-
-
-        screen.refresh();
         handlePlayer();
 
 
@@ -69,25 +65,20 @@ public class Game {
     }
 
 
-    //getting a checkstyle error saying method name is 34 characters??
     public void handlePlayer() throws IOException {
-
         while (true) {
-
             TerminalPosition cursorPos = screen.getCursorPosition();
-            Integer column = cursorPos.getColumn();
             Integer row = cursorPos.getRow();
             KeyStroke key = screen.readInput();
             if (key != null) {
-
                 if (key.getKeyType() == KeyType.ArrowLeft) {
-                    screen.setCursorPosition(new TerminalPosition(column - 1, row));
+                    screen.setCursorPosition(new TerminalPosition(cursorPos.getColumn() - 1, cursorPos.getRow()));
                 } else if (key.getKeyType() == KeyType.ArrowRight) {
-                    screen.setCursorPosition(new TerminalPosition(column + 1, row));
+                    screen.setCursorPosition(new TerminalPosition(cursorPos.getColumn() + 1, cursorPos.getRow()));
                 } else if (key.getKeyType() == KeyType.ArrowUp) {
-                    screen.setCursorPosition(new TerminalPosition(column, row - 1));
+                    screen.setCursorPosition(new TerminalPosition(cursorPos.getColumn(), cursorPos.getRow() - 1));
                 } else if (key.getKeyType() == KeyType.ArrowDown) {
-                    screen.setCursorPosition(new TerminalPosition(column, row + 1));
+                    screen.setCursorPosition(new TerminalPosition(cursorPos.getColumn(), cursorPos.getRow() + 1));
                 } else if (key.getKeyType() == KeyType.Escape) {
                     screen.close();
                 } else if (key.getCharacter().charValue() == 'r') {
@@ -96,17 +87,17 @@ public class Game {
                     tryInsert(key, digitCoordinates.get(cursorPos));
                 }
             }
-
-            screen.clear();
             render();
-            screen.refresh();
         }
     }
 
 
+
     public void render() throws IOException {
+        screen.clear();
         setupInstructions();
         drawBoard();
+        screen.refresh();
     }
 
     private void tryInsert(KeyStroke key, Cell cell) {
