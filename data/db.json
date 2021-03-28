@@ -1,0 +1,13 @@
+{
+  "ids" : ["test1", "test2"],
+  "savedGames" : [
+    {"test1" : {
+      "difficulty": "EASY",
+      "board" : null
+    } },
+    {"test2" : {
+      "difficulty": "HARD",
+      "board" : null
+    } }
+  ]
+}

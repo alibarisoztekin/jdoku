@@ -19,4 +19,7 @@ The roadmap involves implementing difficulty logic with common sudoku techniques
 - As a user, I'd like to save a game
 - As a user, I'd like to be load saved games.
 
+-*Phase 3 User Stories:*
+ - As a user, I'd like be able to play the game with keyboard and mouse 
+ - As a user, I'd like to be able to save my progress and load saved games.
 

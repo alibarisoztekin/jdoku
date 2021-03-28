@@ -1,113 +1,93 @@
 package ui;
 
-import com.googlecode.lanterna.TerminalPosition;
-import com.googlecode.lanterna.graphics.TextGraphics;
-import com.googlecode.lanterna.screen.Screen;
-import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
-import com.googlecode.lanterna.input.KeyStroke;
-import com.googlecode.lanterna.input.KeyType;
-
-import model.Board;
 import model.Cell;
+import model.Sudoku;
+import model.exceptions.CellException;
+import persistance.Decoder;
+import persistance.Encoder;
 
-import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
+
 
 public class Game {
 
-    private Integer boardOffSet = 6;
-    private static final Integer SIZE = 9;
+    private Sudoku sudoku;
+    private Decoder decoder;
+    private Encoder encoder;
+    private Driver driver;
 
+    private List<String> savedGames;
 
-    private Screen screen;
-    private DefaultTerminalFactory terminal;
-    private Board board;
-    private HashMap<TerminalPosition, Cell> digitCoordinates;
+    // Chose to keep Game.State directly accessible to UI package
+    protected State state;
+    private Mode mode;
 
     //EFFECTS: Creates the game object
-    public Game() throws IOException {
-        this.terminal = new DefaultTerminalFactory();
-        this.screen = this.terminal.createScreen();
-        this.screen.startScreen();
-        this.digitCoordinates = new HashMap<>();
-        File puzzle = new File("./data/puzzles/E1.txt");
-        this.board = new Board(puzzle, SIZE);
-        render();
-        handlePlayer();
+    public Game(Mode mode) {
+        this.decoder = new Decoder();
+        this.encoder = new Encoder();
+        this.mode = mode;
+    }
 
+    enum Mode {
+        GUI, CONSOLE;
+    }
+
+    enum State {
+        PLAY, PAUSE, SELECT_SAVED, SELECT_DIFF;
+    }
+
+    public void start() throws IOException {
+
+        switch (this.mode) {
+            case CONSOLE:
+                this.driver = new ConsoleDriver(this);
+                break;
+            case GUI:
+                this.driver = new SwingDriver(this);
+                break;
+        }
+        driver.handleRun();
 
     }
 
+    public Hashtable<Integer, Cell> getCells() {
+        return sudoku.getBoard().getCells();
+    }
 
-    // EFFECTS: draws the digits on the terminal
-    private void drawBoard() throws IOException {
-        TextGraphics tg = screen.newTextGraphics();
-        Hashtable<Integer, Cell> indices = board.getIndexHash();
+    public void changeCellValue(Character insert, Cell cell) throws CellException {
+        if (cell == null || !cell.isInteractive() || !Character.isDigit(insert)) {
+            throw new CellException();
+        }
 
-        for (Integer index : indices.keySet()) {
-            Cell cell = indices.get(index);
-            tg.setForegroundColor(cell.getColor());
-            TerminalPosition cellPos;
-            cellPos = new TerminalPosition(cell.getRow() + boardOffSet, cell.getColumn() + boardOffSet);
-            tg.putString(cellPos, cell.getValue());
-            digitCoordinates.put(cellPos, cell);
+        cell.setValue(insert.toString());
+    }
 
+    public void reset() {
+        sudoku.resetBoard();
+    }
+
+    public List<String> getSaved() {
+        try {
+            return decoder.getSavedGames();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new ArrayList<String>();
         }
     }
 
-    private void setupInstructions() {
-        TextGraphics instructions = screen.newTextGraphics();
-        instructions.putString(new TerminalPosition(0, 0), "use arrow keys to move");
-        instructions.putString(new TerminalPosition(0, 1), "press [esc] to quit");
-        instructions.putString(new TerminalPosition(0, 2), "press [r] to reload");
+    public void save() {
+        this.encoder.save(this);
     }
 
-
-    public void handlePlayer() throws IOException {
-        while (true) {
-            TerminalPosition cursorPos = screen.getCursorPosition();
-            Integer row = cursorPos.getRow();
-            KeyStroke key = screen.readInput();
-            if (key != null) {
-                if (key.getKeyType() == KeyType.ArrowLeft) {
-                    screen.setCursorPosition(new TerminalPosition(cursorPos.getColumn() - 1, cursorPos.getRow()));
-                } else if (key.getKeyType() == KeyType.ArrowRight) {
-                    screen.setCursorPosition(new TerminalPosition(cursorPos.getColumn() + 1, cursorPos.getRow()));
-                } else if (key.getKeyType() == KeyType.ArrowUp) {
-                    screen.setCursorPosition(new TerminalPosition(cursorPos.getColumn(), cursorPos.getRow() - 1));
-                } else if (key.getKeyType() == KeyType.ArrowDown) {
-                    screen.setCursorPosition(new TerminalPosition(cursorPos.getColumn(), cursorPos.getRow() + 1));
-                } else if (key.getKeyType() == KeyType.Escape) {
-                    screen.close();
-                } else if (key.getCharacter().charValue() == 'r') {
-                    board.reload();
-                }  else if (digitCoordinates.containsKey(cursorPos)) {
-                    tryInsert(key, digitCoordinates.get(cursorPos));
-                }
-            }
-            render();
-        }
-    }
-
-
-
-    public void render() throws IOException {
-        screen.clear();
-        setupInstructions();
-        drawBoard();
-        screen.refresh();
-    }
-
-    private void tryInsert(KeyStroke key, Cell cell) {
-
-        Character insert = key.getCharacter().charValue();
-
-        if (cell != null && cell.isInteractive() && Character.isDigit(insert)) {
-            cell.setValue(insert.toString());
-        }
+    public void load(String id) {
 
     }
 
+    public void randomNewWithDifficulty(Sudoku.Difficulty difficulty) {
+        this.sudoku = new Sudoku(difficulty, decoder);
+    }
 }

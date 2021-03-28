@@ -28,7 +28,6 @@ public class CellTest {
     void testConstructor() {
         assertEquals(cell.getRow(), index / bound);
         assertEquals(cell.getColumn(), index % bound);
-        assertEquals(cell.getColor(), TextColor.ANSI.WHITE);
         assertEquals(cell.getValue(), value);
     }
 
@@ -36,11 +35,12 @@ public class CellTest {
     void testInteractive() {
         if (cell.getValue() == "0") {
             assertEquals(cell.isInteractive(), true);
-        } else {
-            assertEquals(cell.isInteractive(), false);
-
         }
+    }
 
+    @Test
+    void testEquals() {
+        assertEquals(this.cell, new Cell(this.index, this.value));
     }
 
 }

@@ -1,36 +1,43 @@
 package model;
 
-import com.googlecode.lanterna.TextColor;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
+import java.util.Objects;
 
+// Class that represents a single cell in the board
 public class Cell {
-    private final Integer index;
+    private final int index;
     private String value;
-    private final Boolean interactive;
-    private final Integer row;
-    private final Integer column;
-    private Integer box;
-    private TextColor color;
+    private final boolean interactive;
+    private int row;
+    private int column;
 
 
-
+    // EFFECTS: instantiate cell with index on board and the value with the info from txt file
     public Cell(Integer index, String value) {
         this.index = index;
         this.value = value;
-        this.row = index / 9;
-        this.column = index % 9;
-
-
-        if (Integer.parseInt(value) == 0) {
-            this.interactive = true;
-            this.color = TextColor.ANSI.GREEN;
-        } else {
-            this.interactive = false;
-
-            this.color = TextColor.ANSI.WHITE;
-        }
-
+        this.interactive = (Integer.parseInt(value) == 0);
+        computeCoords();
     }
+
+    // EFFECTS: instantiate cell from JSON representation
+    public Cell(JSONObject json) throws JSONException {
+        this.index = (int) json.get("index");
+        this.value = (String) json.get("value");
+        this.interactive = (boolean) json.get("isInteractive");
+        computeCoords();
+    }
+
+    // MODIFIES: this
+    // determine row and column location of cell on the board from index
+    private void computeCoords() {
+        this.row = this.index / 9;
+        this.column = this.index % 9;
+    }
+
 
     public Integer getRow() {
         return row;
@@ -49,15 +56,26 @@ public class Cell {
         this.value = value;
     }
 
-    public TextColor getColor() {
-        return color;
-    }
-
     public Boolean isInteractive() {
         return interactive;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Cell cell = (Cell) o;
+        return index == cell.index
+                && interactive == cell.interactive
+                && value.equals(cell.value);
+    }
 
-
-
+    @Override
+    public int hashCode() {
+        return Objects.hash(index, value, interactive);
+    }
 }
