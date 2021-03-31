@@ -1,12 +1,12 @@
 package model;
 
 import model.exceptions.BoardException;
+import org.json.JSONArray;
 import persistance.Decoder;
 
 import java.io.FileNotFoundException;
 import java.util.Hashtable;
 import java.util.Random;
-import java.util.Scanner;
 
 // Represents
 public class Board {
@@ -17,20 +17,18 @@ public class Board {
 
     // REQUIRES: dimensions of puzzle must match size in txt file
     // EFFECTS: instantiates Board with given cells and size
-    public Board(Hashtable<Integer, Cell> cells, int size) {
-        this.size = size;
+    public Board(Hashtable<Integer, Cell> cells) {
+        this.size = 9; //
         this.cells = cells;
     }
 
-    public Board(int size) {
-        this(new Hashtable<>(size * size), size);
-    }
+    //EFFECTS: overload initializer for convenience
 
     // REQUIRES: randUpperBound is 0 indexed, must match number of predetermined games in file;
     // EFFECTS: instantiates a random board with given difficulty from the existing files in ./data/puzzles
     // 0 randUpperBound is for test validity
-    public Board(Sudoku.Difficulty difficulty, Decoder decoder, int size, int randUpperBound) throws BoardException {
-        this(size);
+    public Board(Difficulty difficulty, Decoder decoder, int size, int randUpperBound) throws BoardException {
+        this.size = size;
         int rand;
         try {
             rand = new Random().nextInt(randUpperBound) + 1;
@@ -60,4 +58,10 @@ public class Board {
         }
     }
 
+
+    public JSONArray jsonArr() {
+        JSONArray result = new JSONArray();
+        this.cells.forEach((k,v) -> result.put(k,v.jsoned()));
+        return result;
+    }
 }

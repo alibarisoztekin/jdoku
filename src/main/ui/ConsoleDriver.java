@@ -8,16 +8,17 @@ import com.googlecode.lanterna.input.KeyType;
 import com.googlecode.lanterna.screen.Screen;
 import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
 import model.Cell;
-import model.Sudoku;
+import model.Difficulty;
 import model.exceptions.CellException;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Hashtable;
 import java.util.List;
 
 public class ConsoleDriver implements Driver {
-    private final int boardOffSet = 10;
-    private final int menuOffset = 6;
+
+    private int offset;
 
     private final Screen screen;
     private final DefaultTerminalFactory terminal;
@@ -36,7 +37,7 @@ public class ConsoleDriver implements Driver {
 
     public void handleRun() {
         this.game.state = Game.State.PAUSE;
-        if (game.getSaved().isEmpty()) {
+        if (game.getSavedIds().isEmpty()) {
             game.state = Game.State.SELECT_DIFF;
         } else {
             game.state = Game.State.SELECT_SAVED;
@@ -56,32 +57,34 @@ public class ConsoleDriver implements Driver {
             key = screen.readInput();
             handleInput(key);
 
-
         } while (key.getKeyType() != KeyType.Escape);
         screen.close();
 
     }
 
-    public void handleInput(KeyStroke key) throws IOException {
+    public void handleInput(KeyStroke key) throws FileNotFoundException {
         TerminalPosition cursorPos = screen.getCursorPosition();
         if (key.getKeyType() == KeyType.Escape) {
             game.save();
-            return;
         }
         if (isMoveable(key.getKeyType())) {
             move(key.getKeyType(), cursorPos);
-        } else if (game.state == Game.State.PLAY) {
-            processCommand(key.getCharacter());
-            if (cellCoordinates.containsKey(cursorPos)) {
-                changeCell(key, cellCoordinates.get(cursorPos));
+        } else {
+            if (key.getCharacter() != null) {
+                processCommand(key.getCharacter());
             }
-        } else if (game.state == Game.State.SELECT_DIFF && key.getKeyType() == KeyType.Enter) {
-            newGameFromSelection(cursorPos.getRow() - menuOffset);
-            game.state = Game.State.PLAY;
-        } else if (game.state == Game.State.SELECT_SAVED && key.getKeyType() == KeyType.Enter) {
-            loadGameFromSelection(cursorPos.getRow() - menuOffset);
-            game.state = Game.State.PLAY;
+            if (game.state == Game.State.PLAY && cellCoordinates.containsKey(cursorPos)) {
+                changeCell(key, cellCoordinates.get(cursorPos));
+            } else if (game.state == Game.State.SELECT_DIFF && key.getKeyType() == KeyType.Enter) {
+                newGameFromSelection(cursorPos.getRow() - offset);
+                game.state = Game.State.PLAY;
+            } else if (game.state == Game.State.SELECT_SAVED && key.getKeyType() == KeyType.Enter) {
+                loadGameFromSelection(cursorPos.getRow() - offset);
+                game.state = Game.State.PLAY;
+            }
+
         }
+
 
     }
 
@@ -92,28 +95,30 @@ public class ConsoleDriver implements Driver {
     }
 
 
-
     private void graphicsForState(Game.State state) {
         TextGraphics instructions = screen.newTextGraphics();
         instructions.putString(new TerminalPosition(0, 0), "->use arrow keys to move");
         instructions.putString(new TerminalPosition(0, 1), "->press [esc] to quit");
 
-
-        if (state == Game.State.PLAY) {
-            playInstructions(instructions);
-            try {
+        switch (state) {
+            case PLAY:
+                this.offset = 7;
+                playInstructions(instructions);
                 drawBoard();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        } else {
-            instructions.putString(new TerminalPosition(0, 2), "->press [return] to select");
-            if (state == Game.State.SELECT_SAVED) {
-                instructions.putString(new TerminalPosition(0, 3), "press [n] for new game");
-            }
-            if (state == Game.State.SELECT_DIFF) {
-                selectDiff(instructions);
-            }
+                break;
+            case SELECT_SAVED:
+            case SELECT_DIFF:
+                this.offset = 5;
+                if ((state == Game.State.SELECT_DIFF)) {
+                    selectDiff(instructions);
+                } else {
+                    displaySaved(instructions);
+
+                }
+            default:
+
+                instructions.putString(new TerminalPosition(0, 2), "->press [enter] to select");
+                break;
         }
     }
 
@@ -125,13 +130,13 @@ public class ConsoleDriver implements Driver {
     }
 
     private void selectDiff(TextGraphics instructions) {
-        instructions.putString(new TerminalPosition(menuOffset, menuOffset), Sudoku.Difficulty.EASY.name());
-        instructions.putString(new TerminalPosition(menuOffset, menuOffset + 1), Sudoku.Difficulty.MEDIUM.name());
-        instructions.putString(new TerminalPosition(menuOffset, menuOffset + 2), Sudoku.Difficulty.HARD.name());
+        instructions.putString(new TerminalPosition(offset, offset), "EASY");
+        instructions.putString(new TerminalPosition(offset, offset + 1), "MEDIUM");
+        instructions.putString(new TerminalPosition(offset, offset + 2), "HARD");
     }
 
     // EFFECTS: draws the digits on the terminal
-    private void drawBoard() throws IOException {
+    private void drawBoard() {
         TextGraphics tg = screen.newTextGraphics();
 
         Hashtable<Integer, Cell> indices = game.getCells();
@@ -140,7 +145,7 @@ public class ConsoleDriver implements Driver {
             Cell cell = indices.get(index);
             tg.setForegroundColor(cell.isInteractive() ? TextColor.ANSI.GREEN : TextColor.ANSI.WHITE);
             TerminalPosition cellPos;
-            cellPos = new TerminalPosition(cell.getRow() + boardOffSet, cell.getColumn() + boardOffSet);
+            cellPos = new TerminalPosition(cell.getRow() + offset, cell.getColumn() + offset);
             tg.putString(cellPos, cell.getValue());
             cellCoordinates.put(cellPos, cell);
 
@@ -148,22 +153,18 @@ public class ConsoleDriver implements Driver {
     }
 
 
-
-
     // not good
+    // REQUIRES: int normalizedRow == cursorPos.getRow() - offset must represent corresponding difficulty
+    // EFFECTS: create new Sudoku game from user input
     private void newGameFromSelection(int normalizedRow) {
-        if (normalizedRow == 0) {
-            this.game.randomNewWithDifficulty(Sudoku.Difficulty.EASY);
-        } else if (normalizedRow == 1) {
-            this.game.randomNewWithDifficulty(Sudoku.Difficulty.MEDIUM);
-        } else if (normalizedRow == 2) {
-            this.game.randomNewWithDifficulty(Sudoku.Difficulty.HARD);
+        if (normalizedRow >= 0 && normalizedRow < 3) {
+            this.game.newWithDifficulty(new Difficulty(normalizedRow));
         }
     }
 
     private void loadGameFromSelection(int normalizedRow) {
         try {
-            this.game.load(this.game.getSaved().get(normalizedRow));
+            this.game.load(this.game.getSavedIds().get(normalizedRow));
         } catch (IndexOutOfBoundsException e) {
             // silent handling for invalid user input
         }
@@ -179,14 +180,18 @@ public class ConsoleDriver implements Driver {
             game.state = Game.State.SELECT_SAVED;
         } else if (c == 's') {
             game.state = Game.State.PAUSE;
+            try {
+                game.save();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
         }
     }
 
 
     private void changeCell(KeyStroke key, Cell cell) {
 
-        Character insert = key.getCharacter().charValue();
-
+        Character insert = key.getCharacter();
         try {
             game.changeCellValue(insert, cell);
         } catch (CellException e) {
@@ -194,15 +199,15 @@ public class ConsoleDriver implements Driver {
         }
     }
 
-    private void displaySaved() {
-        TextGraphics saved = screen.newTextGraphics();
-        List<String> savedList = game.getSaved();
+    private void displaySaved(TextGraphics instructions) {
+        instructions.putString(new TerminalPosition(0, 3), "->press [n] for new game");
+        List<String> savedList = game.getSavedIds();
         if (savedList.isEmpty()) {
-            saved.putString(boardOffSet, boardOffSet, "No Games Saved");
-            saved.putString(boardOffSet + 1, boardOffSet, "press [n] for new game");
+            instructions.putString(offset, offset, "No Games Saved");
+            instructions.putString(offset + 1, offset, "press [n] for new game");
         } else {
             for (int i = 0; i < savedList.size(); i++) {
-                saved.putString(boardOffSet, boardOffSet + i, savedList.get(i));
+                instructions.putString(offset, offset + i, savedList.get(i));
             }
 
         }

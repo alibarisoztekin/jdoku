@@ -1,13 +1,13 @@
 package model;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import persistance.Jsonable;
 
 import java.util.Objects;
 
 // Class that represents a single cell in the board
-public class Cell {
+public class Cell implements Jsonable {
     private final int index;
     private String value;
     private final boolean interactive;
@@ -27,7 +27,7 @@ public class Cell {
     public Cell(JSONObject json) throws JSONException {
         this.index = (int) json.get("index");
         this.value = (String) json.get("value");
-        this.interactive = (boolean) json.get("isInteractive");
+        this.interactive = (boolean) json.get("interactive");
         computeCoords();
     }
 
@@ -77,5 +77,14 @@ public class Cell {
     @Override
     public int hashCode() {
         return Objects.hash(index, value, interactive);
+    }
+
+    @Override
+    public JSONObject jsoned() {
+        JSONObject json = new JSONObject();
+        json.put("index", this.index);
+        json.put("value", this.value);
+        json.put("interactive", this.interactive);
+        return json;
     }
 }

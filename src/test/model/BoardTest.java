@@ -5,11 +5,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import persistance.Decoder;
 
-import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.Collections;
 import java.util.Hashtable;
-import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -28,7 +25,7 @@ class BoardTest {
         this.puzzlePath = "E1.txt";
         this.size = 9;
         try {
-            this.board = new Board(Sudoku.Difficulty.EASY, new Decoder(),size,0);
+            this.board = new Board(new Difficulty("E"), new Decoder(),size,0);
         } catch (BoardException e) {
             fail();
             e.printStackTrace();
@@ -51,9 +48,9 @@ class BoardTest {
     @Test
     void testInvalidConstructor() {
         try {
-            Board board = new Board(Sudoku.Difficulty.EASY, new Decoder(),  1, 4);
+            Board board = new Board(new Difficulty("E"), new Decoder(),  1, 4);
         } catch (BoardException e) {
-            // expected;
+            assertNull(board.getCells());
             e.printStackTrace();
         }
     }
