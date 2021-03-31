@@ -7,7 +7,7 @@ import static ui.Game.Mode.*;
 public class Jdoku {
 
     public static void main(String[] args) throws IOException {
-        Game game = new Game(CONSOLE);
+        Game game = new Game(GUI);
         game.start();
 
     }
