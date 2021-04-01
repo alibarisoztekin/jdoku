@@ -102,6 +102,10 @@ public class Game implements Driver, Jsonable {
         this.encoder.save(this);
     }
 
+    public void loadLastSaved() {
+        load(getSavedIds().get(0));
+    }
+
     public void load(String id) {
         if (getSavedIds().contains(id)) {
             this.sudoku = saved.get(id);
@@ -117,7 +121,7 @@ public class Game implements Driver, Jsonable {
         JSONArray idList = new JSONArray(saved.keySet());
         if (this.id == null) {
             this.id = new SimpleDateFormat("yyyy.MM.dd 'at' HH:mm:ss z").format(new Date());
-            idList.put(this.id);
+            idList.put(0, this.id);
             this.saved.put(this.id, this.sudoku);
 
         }

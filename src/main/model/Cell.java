@@ -8,6 +8,10 @@ import java.util.Objects;
 
 // Class that represents a single cell in the board
 public class Cell implements Jsonable {
+    public String getIndex() {
+        return String.valueOf(index);
+    }
+
     private final int index;
     private String value;
     private final boolean interactive;
