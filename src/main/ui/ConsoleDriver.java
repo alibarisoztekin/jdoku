@@ -16,6 +16,8 @@ import java.io.IOException;
 import java.util.Hashtable;
 import java.util.List;
 
+
+// Game driver using SwingTerminal Lanterna
 public class ConsoleDriver implements Driver {
 
     private int offset;
@@ -35,7 +37,8 @@ public class ConsoleDriver implements Driver {
 
     }
 
-    public void handleRun() {
+    @Override
+    public void start() {
         this.game.state = Game.State.PAUSE;
         if (game.getSavedIds().isEmpty()) {
             game.state = Game.State.SELECT_DIFF;

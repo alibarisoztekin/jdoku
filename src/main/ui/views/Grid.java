@@ -68,7 +68,6 @@ public class Grid extends JPanel {
 
     }
 
-    // inspired by https://stackoverflow.com/users/1031312/ozzy
     private void layoutInBorder() {
         JPanel borderPanel = new JPanel();
         borderPanel.setLayout(new GridBagLayout());

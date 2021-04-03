@@ -42,7 +42,7 @@ public class Game implements Driver, JsoNotable {
     }
 
     @Override
-    public void handleRun() {
+    public void start() {
 
     }
 
@@ -54,7 +54,7 @@ public class Game implements Driver, JsoNotable {
         PLAY, PAUSE, SELECT_SAVED, SELECT_DIFF
     }
 
-    public void start() throws IOException {
+    public void handleRun() throws IOException {
 
         switch (this.mode) {
             case CONSOLE:
@@ -68,7 +68,7 @@ public class Game implements Driver, JsoNotable {
                 break;
         }
         this.encoder = new Encoder(mode);
-        driver.handleRun();
+        driver.start();
 
     }
 

@@ -8,7 +8,7 @@ public class Jdoku {
 
     public static void main(String[] args) throws IOException {
         Game game = new Game(GUI);
-        game.start();
+        game.handleRun();
 
     }
 }

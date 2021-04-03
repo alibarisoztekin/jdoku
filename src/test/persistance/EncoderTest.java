@@ -15,7 +15,7 @@ public class EncoderTest {
     public void setup() {
         this.game = new Game(Game.Mode.TEST);
         try {
-            this.game.start();
+            this.game.handleRun();
         } catch (IOException e) {
             e.printStackTrace();
         }
