@@ -28,6 +28,12 @@ public class ConsoleDriver implements Driver {
     private Game game;
 
 
+    private enum State {
+        PLAY, PAUSE, SELECT_SAVED, SELECT_DIFF
+    }
+
+    private State state;
+
     public ConsoleDriver(Game game) throws IOException {
         this.game = game;
         this.terminal = new DefaultTerminalFactory();
@@ -39,11 +45,11 @@ public class ConsoleDriver implements Driver {
 
     @Override
     public void start() {
-        this.game.state = Game.State.PAUSE;
+        this.state = State.PAUSE;
         if (game.getSavedIds().isEmpty()) {
-            game.state = Game.State.SELECT_DIFF;
+            state = State.SELECT_DIFF;
         } else {
-            game.state = Game.State.SELECT_SAVED;
+            state = State.SELECT_SAVED;
         }
 
         try {
@@ -56,7 +62,7 @@ public class ConsoleDriver implements Driver {
     private void tick() throws IOException {
         KeyStroke key;
         do {
-            render(game.state);
+            render(state);
             key = screen.readInput();
             handleInput(key);
 
@@ -76,14 +82,14 @@ public class ConsoleDriver implements Driver {
             if (key.getCharacter() != null) {
                 processCommand(key.getCharacter());
             }
-            if (game.state == Game.State.PLAY && cellCoordinates.containsKey(cursorPos)) {
+            if (state == State.PLAY && cellCoordinates.containsKey(cursorPos)) {
                 changeCell(key, cellCoordinates.get(cursorPos));
-            } else if (game.state == Game.State.SELECT_DIFF && key.getKeyType() == KeyType.Enter) {
+            } else if (state == State.SELECT_DIFF && key.getKeyType() == KeyType.Enter) {
                 newGameFromSelection(cursorPos.getRow() - offset);
-                game.state = Game.State.PLAY;
-            } else if (game.state == Game.State.SELECT_SAVED && key.getKeyType() == KeyType.Enter) {
+                state = State.PLAY;
+            } else if (state == State.SELECT_SAVED && key.getKeyType() == KeyType.Enter) {
                 loadGameFromSelection(cursorPos.getRow() - offset);
-                game.state = Game.State.PLAY;
+                state = State.PLAY;
             }
 
         }
@@ -91,14 +97,14 @@ public class ConsoleDriver implements Driver {
 
     }
 
-    public void render(Game.State state) throws IOException {
+    public void render(State state) throws IOException {
         screen.clear();
         graphicsForState(state);
         screen.refresh();
     }
 
 
-    private void graphicsForState(Game.State state) {
+    private void graphicsForState(State state) {
         TextGraphics instructions = screen.newTextGraphics();
         instructions.putString(new TerminalPosition(0, 0), "->use arrow keys to move");
         instructions.putString(new TerminalPosition(0, 1), "->press [esc] to quit");
@@ -112,7 +118,7 @@ public class ConsoleDriver implements Driver {
             case SELECT_SAVED:
             case SELECT_DIFF:
                 this.offset = 5;
-                if ((state == Game.State.SELECT_DIFF)) {
+                if ((state == State.SELECT_DIFF)) {
                     selectDiff(instructions);
                 } else {
                     displaySaved(instructions);
@@ -178,11 +184,11 @@ public class ConsoleDriver implements Driver {
         if (c == 'r') {
             game.reset();
         } else if (c == 'n') {
-            game.state = Game.State.SELECT_DIFF;
+            state = State.SELECT_DIFF;
         } else if (c == 'l') {
-            game.state = Game.State.SELECT_SAVED;
+            state = State.SELECT_SAVED;
         } else if (c == 's') {
-            game.state = Game.State.PAUSE;
+            state = State.PAUSE;
             try {
                 game.save();
             } catch (FileNotFoundException e) {

@@ -15,7 +15,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-
+//
 public class Game implements Driver, JsoNotable {
 
     private Sudoku sudoku;
@@ -24,8 +24,7 @@ public class Game implements Driver, JsoNotable {
     private Driver driver;
     private HashMap<String, Sudoku> saved;
 
-    // Chose to keep Game.State directly accessible to Drivers
-    protected State state;
+
     private Mode mode;
     private String id;
 
@@ -41,6 +40,8 @@ public class Game implements Driver, JsoNotable {
 
     }
 
+
+    // headless driver for testing
     @Override
     public void start() {
 
@@ -50,9 +51,6 @@ public class Game implements Driver, JsoNotable {
         GUI, CONSOLE, TEST
     }
 
-    enum State {
-        PLAY, PAUSE, SELECT_SAVED, SELECT_DIFF
-    }
 
     public void handleRun() throws IOException {
 
@@ -128,7 +126,7 @@ public class Game implements Driver, JsoNotable {
         saved.forEach((k,v) -> games.put(k,v.json()));
 
         return new JSONObject()
-                .put("ids", new JSONArray(saved.keySet()))
+                .put("ids",idList)
                 .put("savedGames",games);
     }
 }
