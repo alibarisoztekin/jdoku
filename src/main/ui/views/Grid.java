@@ -26,7 +26,7 @@ public class Grid extends JPanel {
     public Grid(SwingDriver driver) {
         super();
         this.driver = driver;
-        this.cells = new ArrayList<JTextField>();
+        this.cells = new ArrayList<>();
         this.board = driver.getBoard();
         this.cellFields = new JTextField[9][9];
         layoutGrid();
@@ -43,8 +43,7 @@ public class Grid extends JPanel {
             JTextField curField = new JTextField();
             cellFields[row][col] = curField;
             setupCellField(cell, curField);
-            curField.addActionListener(this.driver);
-            curField.addPropertyChangeListener(cell.getIndex(),this.driver);
+
         }
     }
 
@@ -64,6 +63,8 @@ public class Grid extends JPanel {
         }
         curField.setHorizontalAlignment(JTextField.CENTER);
         curField.setFont(new Font("Helvetica",Font.BOLD, 20));
+        curField.setActionCommand(cell.getIndex());
+        curField.addActionListener(this.driver);
 
     }
 

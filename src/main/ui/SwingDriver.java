@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
-public class SwingDriver extends JFrame implements Driver, ActionListener, PropertyChangeListener {
+public class SwingDriver extends JFrame implements Driver, ActionListener {
 
     private Game game;
     private Grid grid;
@@ -34,7 +34,6 @@ public class SwingDriver extends JFrame implements Driver, ActionListener, Prope
     public SwingDriver(Game game) {
         super("Jdoku");
         this.game = game;
-
 
     }
 
@@ -80,7 +79,6 @@ public class SwingDriver extends JFrame implements Driver, ActionListener, Prope
         this.add(indicator);
         this.endGif = new GIF();
 
-        //add action
     }
 
     public void handleRun() {
@@ -106,6 +104,22 @@ public class SwingDriver extends JFrame implements Driver, ActionListener, Prope
             endGif.setVisible(true);
             this.setVisible(true);
 
+        } else if (e.getSource() instanceof JTextField) {
+            consumeCellEvent(e);
+        }
+    }
+
+    private void consumeCellEvent(ActionEvent e) {
+        JTextField field = (JTextField) e.getSource();
+        int index = Integer.parseInt(e.getActionCommand());
+        String newVal = field.getText().substring(0,1);
+        try {
+            Integer.parseInt(newVal);
+            game.changeCellValue(newVal.charAt(0),this.grid.getBoard().get(index));
+        } catch (NumberFormatException ne) {
+            field.setText("");
+        } catch (CellException cellException) {
+            cellException.printStackTrace();
         }
     }
 
@@ -117,17 +131,4 @@ public class SwingDriver extends JFrame implements Driver, ActionListener, Prope
         return game.getSavedIds();
     }
 
-    @Override
-    public void propertyChange(PropertyChangeEvent evt) {
-        if (evt.getNewValue() != null) {
-            int index = Integer.parseInt(evt.getPropertyName());
-            if (Character.isDigit((Character) evt.getNewValue())) {
-                try {
-                    game.changeCellValue((Character) evt.getNewValue(),grid.getBoard().get(index));
-                } catch (CellException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
 }

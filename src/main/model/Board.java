@@ -61,7 +61,7 @@ public class Board {
 
     public JSONArray jsonArr() {
         JSONArray result = new JSONArray();
-        this.cells.forEach((k,v) -> result.put(k,v.jsoned()));
+        this.cells.forEach((k,v) -> result.put(k,v.json()));
         return result;
     }
 }

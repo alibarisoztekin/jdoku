@@ -2,12 +2,12 @@ package model;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import persistance.Jsonable;
+import persistance.JsoNotable;
 
 import java.util.Objects;
 
 // Class that represents a single cell in the board
-public class Cell implements Jsonable {
+public class Cell implements JsoNotable {
     public String getIndex() {
         return String.valueOf(index);
     }
@@ -84,7 +84,7 @@ public class Cell implements Jsonable {
     }
 
     @Override
-    public JSONObject jsoned() {
+    public JSONObject json() {
         JSONObject json = new JSONObject();
         json.put("index", this.index);
         json.put("value", this.value);

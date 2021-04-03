@@ -8,7 +8,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import persistance.Decoder;
 import persistance.Encoder;
-import persistance.Jsonable;
+import persistance.JsoNotable;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -16,7 +16,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 
-public class Game implements Driver, Jsonable {
+public class Game implements Driver, JsoNotable {
 
     private Sudoku sudoku;
     private Decoder decoder;
@@ -51,11 +51,10 @@ public class Game implements Driver, Jsonable {
     }
 
     enum State {
-        PLAY, PAUSE, SELECT_SAVED, SELECT_DIFF;
+        PLAY, PAUSE, SELECT_SAVED, SELECT_DIFF
     }
 
     public void start() throws IOException {
-
 
         switch (this.mode) {
             case CONSOLE:
@@ -65,7 +64,7 @@ public class Game implements Driver, Jsonable {
                 this.driver = new SwingDriver(this);
                 break;
             case TEST:
-                this.driver = (Driver) this;
+                this.driver = this;
                 break;
         }
         this.encoder = new Encoder(mode);
@@ -94,7 +93,7 @@ public class Game implements Driver, Jsonable {
             return decoder.getIds();
         } catch (IOException e) {
             e.printStackTrace();
-            return new ArrayList<String>();
+            return new ArrayList<>();
         }
     }
 
@@ -117,7 +116,7 @@ public class Game implements Driver, Jsonable {
     }
 
     @Override
-    public JSONObject jsoned() {
+    public JSONObject json() {
         JSONArray idList = new JSONArray(saved.keySet());
         if (this.id == null) {
             this.id = new SimpleDateFormat("yyyy.MM.dd 'at' HH:mm:ss z").format(new Date());
@@ -126,7 +125,7 @@ public class Game implements Driver, Jsonable {
 
         }
         JSONObject games = new JSONObject();
-        saved.forEach((k,v) -> games.put(k,v.jsoned()));
+        saved.forEach((k,v) -> games.put(k,v.json()));
 
         return new JSONObject()
                 .put("ids", new JSONArray(saved.keySet()))

@@ -21,7 +21,7 @@ public class Encoder extends DirectoryAccess {
 
     public void save(Game game) throws FileNotFoundException {
         PrintWriter writer = new PrintWriter(new File(currentPath));
-        writer.print(game.jsoned().toString(TAB));
+        writer.print(game.json().toString(TAB));
         writer.close();
     }
 }

@@ -3,9 +3,9 @@ package model;
 import model.exceptions.BoardException;
 import org.json.JSONObject;
 import persistance.Decoder;
-import persistance.Jsonable;
+import persistance.JsoNotable;
 
-public class Sudoku implements Jsonable {
+public class Sudoku implements JsoNotable {
 
 
     public Difficulty getDifficulty() {
@@ -44,7 +44,7 @@ public class Sudoku implements Jsonable {
     }
 
     @Override
-    public JSONObject jsoned() {
+    public JSONObject json() {
         return new JSONObject()
                 .put("board",board.jsonArr())
                 .put("difficulty", this.difficulty.toString());
