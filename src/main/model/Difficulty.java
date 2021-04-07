@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+
+// Difficulty of sudoku game {not an ideal implementation, enum wasn't suitable}
 public class Difficulty {
 
     private String description;
@@ -18,6 +20,7 @@ public class Difficulty {
 
         this.description = list.get(val);
     }
+
 
     private static  ArrayList<String> setup() {
         ArrayList<String> list = new ArrayList<>();

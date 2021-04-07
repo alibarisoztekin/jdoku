@@ -4,6 +4,7 @@ import model.Cell;
 import ui.SwingDriver;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import java.awt.*;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
@@ -59,12 +60,15 @@ public class Grid extends JPanel {
         } else {
             curField.setEditable(false);
             curField.setBackground(Color.WHITE);
-            curField.setForeground(Color.LIGHT_GRAY);
+            curField.setForeground(Color.DARK_GRAY);
         }
+        curField.setBorder(BorderFactory.createLineBorder(Color.BLACK));
         curField.setHorizontalAlignment(JTextField.CENTER);
+        curField.setPreferredSize(new Dimension(30,30));
         curField.setFont(new Font("Helvetica",Font.BOLD, 20));
         curField.setActionCommand(cell.getIndex());
         curField.addActionListener(this.driver);
+
 
     }
 
@@ -84,4 +88,13 @@ public class Grid extends JPanel {
         }
         this.add(borderPanel);
     }
+
+    public void setBoard(Hashtable<Integer, Cell> board) {
+        this.board = board;
+        layoutGrid();
+        layoutInBorder();
+        setBounds(150, 30, 270, 270);
+        this.repaint();
+    }
+
 }

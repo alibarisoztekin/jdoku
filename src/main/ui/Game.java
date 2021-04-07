@@ -104,6 +104,11 @@ public class Game implements Driver, JsoNotable {
     }
 
     public void load(String id) {
+        try {
+            this.saved = this.decoder.loadGames();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         if (getSavedIds().contains(id)) {
             this.sudoku = saved.get(id);
         }
