@@ -12,7 +12,6 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.Hashtable;
 import java.util.List;
 
@@ -47,7 +46,7 @@ public class SwingDriver extends JFrame implements Driver, ActionListener {
 
         setLayout(new FlowLayout(FlowLayout.LEFT));
         setupPeripherals();
-        setupViews();
+        setupGrid();
 
         pack();
         setLocationRelativeTo(null);
@@ -56,11 +55,9 @@ public class SwingDriver extends JFrame implements Driver, ActionListener {
 
     }
 
-    private void setupViews() {
+    private void setupGrid() {
         this.grid = new Grid(this);
         this.add(grid);
-        this.newGamePopup = new NewGame(this);
-        this.savedPopup = new Saved(this);
 
     }
 
@@ -74,9 +71,15 @@ public class SwingDriver extends JFrame implements Driver, ActionListener {
 
 
         this.resetButton = new JButton("Reset");
-        resetButton.setActionCommand("cheat");
+        resetButton.setActionCommand("reset");
         resetButton.addActionListener(this);
         this.add(resetButton);
+
+        JButton cheat = new JButton("cheat");
+        cheat.setActionCommand("cheat");
+        cheat.addActionListener(this);
+        this.add(cheat);
+
         this.indicator = new JLabel("     ");
 
         Icon gif = new ImageIcon("./data/gg.gif");
@@ -114,6 +117,7 @@ public class SwingDriver extends JFrame implements Driver, ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        resetPeripherals();
         if (e.getActionCommand().equals("save")) {
             handleSave();
         } else if (e.getActionCommand().equals("cheat")) {
@@ -122,38 +126,49 @@ public class SwingDriver extends JFrame implements Driver, ActionListener {
             handleLoad();
         } else if (e.getActionCommand().equals("new")) {
             handleNew();
+        } else if (e.getActionCommand().equals("reset")) {
+            game.reset();
+            this.grid.setCellHashtable(game.getCells());
         } else if (e.getSource() instanceof JTextField) {
             consumeCellEvent(e);
         } else if (e.getSource() instanceof JMenuItem) {
-            if (e.getActionCommand().length() > 1) {
-                consumeLoadSavedEvent(e);
-            } else {
-                consumeNewGameEvent(e);
-            }
-            this.grid.setBoard(game.getCells());
+            handleMenuEvent(e);
         }
         this.setVisible(true);
     }
 
+    private void resetPeripherals() {
+        if (endGif.isShowing()) {
+            endGif.setVisible(false);
+            this.remove(endGif);
+        }
+        if (indicator.isShowing()) {
+            indicator.setVisible(false);
+            this.remove(indicator);
+        }
+    }
+
+    private void handleMenuEvent(ActionEvent e) {
+        if (e.getActionCommand().length() > 1) {
+            consumeLoadSavedEvent(e);
+        } else {
+            consumeNewGameEvent(e);
+        }
+        this.grid.setCellHashtable(game.getCells());
+    }
+
     private void handleLoad() {
-        this.add(savedPopup);
+        this.savedPopup = new Saved(this);
         savedPopup.show(this.loadButton, loadButton.getX(), loadButton.getY());
     }
 
     private void handleNew() {
-        this.grid.setVisible(false);
-        this.remove(grid);
-        this.add(newGamePopup);
+        this.newGamePopup = new NewGame(this);
         newGamePopup.show(this.newButton, newButton.getX(), newButton.getY());
-        this.grid = new Grid(this);
-        this.add(grid);
-        this.grid.setVisible(true);
+
     }
 
     private void consumeNewGameEvent(ActionEvent e) {
-        this.grid.setVisible(false);
-        this.grid.invalidate();
-        this.remove(grid);
         if (e.getActionCommand().equals("E")) {
             game.newWithDifficulty(new Difficulty(0));
         } else if (e.getActionCommand().equals("M")) {
@@ -162,9 +177,6 @@ public class SwingDriver extends JFrame implements Driver, ActionListener {
             game.newWithDifficulty(new Difficulty(2));
         }
 
-        this.grid = new Grid(this);
-        this.add(grid);
-        this.grid.setVisible(true);
 
     }
 
@@ -210,18 +222,18 @@ public class SwingDriver extends JFrame implements Driver, ActionListener {
         String newVal = field.getText().substring(0, 1);
         try {
             int val = Integer.parseInt(newVal);
-            game.changeCellValue(newVal.charAt(0), this.grid.getBoard().get(index));
+            game.changeCellValue(newVal.charAt(0), this.grid.getCellHashtable().get(index));
             if (val == 0) {
-                field.setText(" ");
+                field.setText("");
             }
         } catch (NumberFormatException ne) {
-            field.setText(" ");
+            field.setText("");
         } catch (CellException cellException) {
             cellException.printStackTrace();
         }
     }
 
-    public Hashtable<Integer, Cell> getBoard() {
+    public Hashtable<Integer, Cell> getCells() {
         return game.getCells();
     }
 

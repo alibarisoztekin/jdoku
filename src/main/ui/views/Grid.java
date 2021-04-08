@@ -4,9 +4,7 @@ import model.Cell;
 import ui.SwingDriver;
 
 import javax.swing.*;
-import javax.swing.border.Border;
 import java.awt.*;
-import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Hashtable;
 
@@ -16,11 +14,11 @@ public class Grid extends JPanel {
     private JTextField[][] cellFields;
 
 
-    public Hashtable<Integer, Cell> getBoard() {
-        return board;
+    public Hashtable<Integer, Cell> getCellHashtable() {
+        return cellHashtable;
     }
 
-    private Hashtable<Integer, Cell> board;
+    private Hashtable<Integer, Cell> cellHashtable;
     private ArrayList<JTextField> cells;
     private SwingDriver driver;
 
@@ -28,7 +26,7 @@ public class Grid extends JPanel {
         super();
         this.driver = driver;
         this.cells = new ArrayList<>();
-        this.board = driver.getBoard();
+        this.cellHashtable = driver.getCells();
         this.cellFields = new JTextField[9][9];
         layoutGrid();
         layoutInBorder();
@@ -37,8 +35,8 @@ public class Grid extends JPanel {
     // EFFECTS: maps Cells to JTextFields
     private void layoutGrid() {
 
-        for (int index : this.board.keySet()) {
-            Cell cell = this.board.get(index);
+        for (int index : this.cellHashtable.keySet()) {
+            Cell cell = this.cellHashtable.get(index);
             int row = cell.getRow();
             int col = cell.getColumn();
             JTextField curField = new JTextField();
@@ -50,7 +48,7 @@ public class Grid extends JPanel {
 
     private void setupCellField(Cell cell, JTextField curField) {
         if (cell.getValue().equals("0")) {
-            curField.setText(" ");
+            curField.setText("");
         } else {
             curField.setText(cell.getValue());
         }
@@ -89,12 +87,12 @@ public class Grid extends JPanel {
         this.add(borderPanel);
     }
 
-    public void setBoard(Hashtable<Integer, Cell> board) {
-        this.board = board;
+    public void setCellHashtable(Hashtable<Integer, Cell> cellHashtable) {
+        this.removeAll();
+        this.cellHashtable = cellHashtable;
         layoutGrid();
         layoutInBorder();
         setBounds(150, 30, 270, 270);
-        this.repaint();
     }
 
 }

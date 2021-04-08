@@ -9,14 +9,11 @@ public class Saved extends JPopupMenu {
     private final SwingDriver driver;
     private List<String> ids;
 
-    private JButton ok;
-    private JButton cancel;
 
     public Saved(SwingDriver driver) {
         super("Saved Games");
         this.driver = driver;
         this.ids = this.driver.getIds();
-        this.ok = new JButton();
         listSavedInMenu();
 
     }

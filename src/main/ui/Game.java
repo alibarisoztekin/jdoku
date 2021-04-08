@@ -104,34 +104,32 @@ public class Game implements Driver, JsoNotable {
     }
 
     public void load(String id) {
-        try {
-            this.saved = this.decoder.loadGames();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
         if (getSavedIds().contains(id)) {
             this.sudoku = saved.get(id);
+            this.id = id;
         }
     }
 
     public void newWithDifficulty(Difficulty difficulty) {
         this.sudoku = new Sudoku(difficulty, decoder);
+        this.id = new SimpleDateFormat("yyyy.MM.dd 'at' HH:mm:ss z").format(new Date());
+
+
     }
 
     @Override
     public JSONObject json() {
         JSONArray idList = new JSONArray(saved.keySet());
-        if (this.id == null) {
-            this.id = new SimpleDateFormat("yyyy.MM.dd 'at' HH:mm:ss z").format(new Date());
-            idList.put(0, this.id);
-            this.saved.put(this.id, this.sudoku);
+        idList.put(0, this.id);
+        this.saved.put(this.id, this.sudoku);
 
-        }
+
         JSONObject games = new JSONObject();
-        saved.forEach((k,v) -> games.put(k,v.json()));
+        saved.forEach((k, v) -> games.put(k, v.json()));
 
         return new JSONObject()
-                .put("ids",idList)
-                .put("savedGames",games);
+                .put("ids", idList)
+                .put("savedGames", games);
     }
 }

@@ -9,7 +9,7 @@ import javax.swing.*;
 public class NewGame extends JPopupMenu {
     private SwingDriver driver;
 
-    //Syntactic coupling with Difficulty, fix this!
+    //Semantic coupling with Difficulty, fix this!
     public NewGame(SwingDriver driver) {
         this.driver = driver;
         JMenuItem easy = new JMenuItem("Easy");
