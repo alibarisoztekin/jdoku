@@ -2,7 +2,7 @@ package model;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import persistance.JsoNotable;
+import persistence.JsoNotable;
 
 import java.util.Objects;
 

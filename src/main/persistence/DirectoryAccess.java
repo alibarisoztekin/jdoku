@@ -1,4 +1,4 @@
-package persistance;
+package persistence;
 
 
 // Abstract class providing necessary path information to subclasses

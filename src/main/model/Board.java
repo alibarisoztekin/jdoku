@@ -2,7 +2,7 @@ package model;
 
 import model.exceptions.BoardException;
 import org.json.JSONArray;
-import persistance.Decoder;
+import persistence.Decoder;
 
 import java.io.FileNotFoundException;
 import java.util.Hashtable;

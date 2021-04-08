@@ -6,9 +6,9 @@ import model.Sudoku;
 import model.exceptions.CellException;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import persistance.Decoder;
-import persistance.Encoder;
-import persistance.JsoNotable;
+import persistence.Decoder;
+import persistence.Encoder;
+import persistence.JsoNotable;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;

@@ -1,4 +1,4 @@
-package persistance;
+package persistence;
 
 import model.Board;
 import model.Cell;

@@ -28,6 +28,16 @@ The roadmap involves implementing difficulty logic with common sudoku techniques
 throws BoardException if .txt File within name specification is not found
 
     { additionally Driver interface provides decoupling of UI logic and instantion with start()}
+    
+- Task 3: 
+
+There's semantic coupling between New Game view and Difficulty and Console driver
+a better implementation of difficulty selection logic would be beneficial 
+
+Logic between Sudoku Board and Game can be better implemented 
+
+Unit testing of model and persistence packages is also lacking coverage and needs more tests
+
 
 
 

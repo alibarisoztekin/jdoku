@@ -1,4 +1,4 @@
-package persistance;
+package persistence;
 
 import model.Difficulty;
 import org.junit.jupiter.api.BeforeEach;

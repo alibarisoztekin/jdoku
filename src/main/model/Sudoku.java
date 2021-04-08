@@ -2,8 +2,8 @@ package model;
 
 import model.exceptions.BoardException;
 import org.json.JSONObject;
-import persistance.Decoder;
-import persistance.JsoNotable;
+import persistence.Decoder;
+import persistence.JsoNotable;
 
 public class Sudoku implements JsoNotable {
 

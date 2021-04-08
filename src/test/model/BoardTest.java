@@ -3,7 +3,7 @@ package model;
 import model.exceptions.BoardException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import persistance.Decoder;
+import persistence.Decoder;
 
 import java.io.FileNotFoundException;
 import java.util.Hashtable;
