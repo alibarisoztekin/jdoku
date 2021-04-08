@@ -7,7 +7,8 @@
         "2021.04.07 at 16:41:52 PDT",
         "2021.04.07 at 15:58:01 PDT",
         "2021.04.07 at 16:49:37 PDT",
-        "2021.04.07 at 15:52:58 PDT"
+        "2021.04.07 at 15:52:58 PDT",
+        "2021.04.07 at 16:52:38 PDT"
     ],
     "savedGames": {
         "2021.04.07 at 16:40:52 PDT": {
@@ -3301,12 +3302,12 @@
                 {
                     "interactive": true,
                     "index": 1,
-                    "value": "0"
+                    "value": "6"
                 },
                 {
                     "interactive": true,
                     "index": 2,
-                    "value": "0"
+                    "value": "6"
                 },
                 {
                     "interactive": true,
@@ -3391,7 +3392,7 @@
                 {
                     "interactive": true,
                     "index": 19,
-                    "value": "0"
+                    "value": "5"
                 },
                 {
                     "interactive": true,
@@ -3436,7 +3437,7 @@
                 {
                     "interactive": true,
                     "index": 28,
-                    "value": "0"
+                    "value": "5"
                 },
                 {
                     "interactive": false,

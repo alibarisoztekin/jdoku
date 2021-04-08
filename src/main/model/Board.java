@@ -22,11 +22,10 @@ public class Board {
         this.cells = cells;
     }
 
-    //EFFECTS: overload initializer for convenience
 
-    // REQUIRES: randUpperBound is 0 indexed, must match number of predetermined games in file;
     // EFFECTS: instantiates a random board with given difficulty from the existing files in ./data/puzzles
     // 0 randUpperBound is for test validity
+    // throws BoardException if File with given upper bound is not found
     public Board(Difficulty difficulty, Decoder decoder, int size, int randUpperBound) throws BoardException {
         this.size = size;
         int rand;

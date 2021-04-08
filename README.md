@@ -23,3 +23,11 @@ The roadmap involves implementing difficulty logic with common sudoku techniques
  - As a user, I'd like be able to play the game with keyboard and mouse 
  - As a user, I'd like to be able to save my progress and load saved game on start.
 
+-*Phase 4:*
+- Task 2: Robust design of Board class, constructor 
+throws BoardException if .txt File within name specification is not found
+
+    { additionally Driver interface provides decoupling of UI logic and instantion with start()}
+
+
+

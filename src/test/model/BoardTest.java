@@ -27,7 +27,7 @@ class BoardTest {
         try {
             this.board = new Board(new Difficulty("E"), new Decoder(),size,0);
         } catch (BoardException e) {
-            fail();
+            fail("Not supposed to fail here");
             e.printStackTrace();
         }
         try {
@@ -50,6 +50,7 @@ class BoardTest {
         try {
             Board board = new Board(new Difficulty("E"), new Decoder(),  1, 4);
         } catch (BoardException e) {
+            // expected Exception
             assertNull(board.getCells());
             e.printStackTrace();
         }
